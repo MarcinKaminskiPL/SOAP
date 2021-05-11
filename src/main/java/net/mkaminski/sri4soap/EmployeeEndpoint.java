@@ -13,6 +13,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,6 +53,8 @@ public class EmployeeEndpoint {
         employeeRepository.save(emp);
         AddEmployeeResponse response = new AddEmployeeResponse();
         response.setEmployeeId(new BigDecimal(emp.getId()));
+        System.out.println(emp.toString());
+
         return response;
     }
     private EmployeeDto convertToDto(Employee e){
@@ -67,7 +70,6 @@ public class EmployeeEndpoint {
             birthDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(e.getBirthDate().toString());
             dto.setBirthDate(birthDate);
             dto.setJob(e.getJob());
-
             return dto;
         } catch(DatatypeConfigurationException datatypeConfigurationException){
             datatypeConfigurationException.printStackTrace();
@@ -80,6 +82,7 @@ public class EmployeeEndpoint {
                 .id(dto.getId() !=null ? dto.getId().longValue() : null)
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
+                .birthDate(dto.getBirthDate().toGregorianCalendar().toZonedDateTime().toLocalDate())
                 .job(dto.getJob())
                 .build();
     }
